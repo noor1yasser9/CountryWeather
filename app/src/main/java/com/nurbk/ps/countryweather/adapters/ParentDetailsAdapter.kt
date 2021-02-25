@@ -27,9 +27,8 @@ class ParentDetailsAdapter @Inject constructor(
             itemAdapter = ItemParentDetailsAdapter()
             item.rcData.apply {
                 adapter = itemAdapter
-
                 itemAdapter.data = data
-                layoutManager
+                layoutManager=
                     StaggeredGridLayoutManager(3, GridLayoutManager.HORIZONTAL)
 
 //                } else {
