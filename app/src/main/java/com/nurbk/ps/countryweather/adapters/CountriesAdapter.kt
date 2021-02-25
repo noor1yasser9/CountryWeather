@@ -26,10 +26,10 @@ class CountriesAdapter @Inject constructor(
         RecyclerView.ViewHolder(item.root) {
         fun bind(countriesItem: CountriesItem) {
 
-            if (countriesItem.name == ("Israel")) {
-                countriesItem.name = "Palestine"
-                countriesItem.flag = "https://restcountries.eu/data/pse.svg"
-            }
+//            if (countriesItem.name == ("Israel")) {
+//                countriesItem.name = "Palestine"
+//                countriesItem.flag = "https://restcountries.eu/data/pse.svg"
+//            }
             item.txtName.setSingleLine()
             item.txtName.isSelected = true
             glid.diskCacheStrategy(DiskCacheStrategy.NONE)
