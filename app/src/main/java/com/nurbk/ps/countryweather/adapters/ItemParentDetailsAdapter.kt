@@ -73,21 +73,4 @@ class ItemParentDetailsAdapter constructor(
         return super.getItemViewType(position)
     }
 
-//
-//    private val diffCallback = object : DiffUtil.ItemCallback<ObjectDetails>() {
-//        override fun areItemsTheSame(oldItem: ObjectDetails, newItem: ObjectDetails): Boolean {
-//            return oldItem.name == newItem.name
-//        }
-//
-//        override fun areContentsTheSame(oldItem: ObjectDetails, newItem: ObjectDetails): Boolean {
-//            return oldItem.hashCode() == newItem.hashCode()
-//        }
-//    }
-//
-//
-//    val differ = AsyncListDiffer(this, diffCallback)
-//
-//    var objectDetails: List<ObjectDetails>
-//        get() = differ.currentList
-//        set(value) = differ.submitList(value)
 }
