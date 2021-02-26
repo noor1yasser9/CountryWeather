@@ -10,6 +10,8 @@ import com.nurbk.ps.countryweather.databinding.ItemCitiesBinding
 import com.nurbk.ps.countryweather.databinding.ItemImageBinding
 import com.nurbk.ps.countryweather.model.ObjectDetails
 import com.nurbk.ps.countryweather.model.cities.City
+import com.nurbk.ps.countryweather.model.countries.Currency
+import com.nurbk.ps.countryweather.model.countries.Language
 import com.nurbk.ps.countryweather.model.photos.Photo
 
 class ItemParentDetailsAdapter constructor(
@@ -22,6 +24,14 @@ class ItemParentDetailsAdapter constructor(
         RecyclerView.ViewHolder(item.root) {
         fun bind(city: City) {
             item.item = city
+        }
+    }
+
+    inner class ItemBordersViewHolder(val item: ItemCitiesBinding) :
+        RecyclerView.ViewHolder(item.root) {
+        fun bind(text: String) {
+            item.itemBorder = text
+            item.chip4.text = text
         }
     }
 
@@ -44,8 +54,14 @@ class ItemParentDetailsAdapter constructor(
                     LayoutInflater.from(parent.context), R.layout.item_image, parent, false
                 )
             )
-        } else {
+        } else if (viewType == 2) {
             return ItemCitiesViewHolder(
+                DataBindingUtil.inflate(
+                    LayoutInflater.from(parent.context), R.layout.item_cities, parent, false
+                )
+            )
+        } else {
+            return ItemBordersViewHolder(
                 DataBindingUtil.inflate(
                     LayoutInflater.from(parent.context), R.layout.item_cities, parent, false
                 )
@@ -58,6 +74,17 @@ class ItemParentDetailsAdapter constructor(
             holder.bind(data.data[position] as Photo)
         } else if (holder is ItemCitiesViewHolder) {
             holder.bind(data.data[position] as City)
+        } else if (holder is ItemBordersViewHolder) {
+            if (data.data[position] is Currency)
+                try {
+                    holder.bind((data.data[position] as Currency).symbol)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            else if (data.data[position] is Language)
+                holder.bind((data.data[position] as Language).name)
+            else
+                holder.bind(data.data[position].toString())
         }
     }
 
@@ -70,7 +97,7 @@ class ItemParentDetailsAdapter constructor(
         } else if (data.type == 2) {
             return 2
         }
-        return super.getItemViewType(position)
+        return 3
     }
 
 }
