@@ -1,25 +1,23 @@
 package com.nurbk.ps.countryweather.adapters
 
-import android.graphics.drawable.PictureDrawable
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.GenericRequestBuilder
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.caverock.androidsvg.SVG
+import com.bumptech.glide.RequestManager
 import com.nurbk.ps.countryweather.R
 import com.nurbk.ps.countryweather.databinding.ItemCountriesBinding
 import com.nurbk.ps.countryweather.model.countries.CountriesItem
-import java.io.InputStream
+import com.nurbk.ps.countryweather.utils.LoadImageSVG
 import javax.inject.Inject
 
 
-class CountriesAdapter @Inject constructor(
-    val glid: GenericRequestBuilder<Uri, InputStream, SVG, PictureDrawable>
+class CountriesAdapter
+@Inject
+constructor(
+    val glide: RequestManager
 ) :
     RecyclerView.Adapter<CountriesAdapter.CountriesViewHolder>() {
     inner class CountriesViewHolder(val item: ItemCountriesBinding) :
@@ -32,9 +30,13 @@ class CountriesAdapter @Inject constructor(
 //            }
             item.txtName.setSingleLine()
             item.txtName.isSelected = true
-            glid.diskCacheStrategy(DiskCacheStrategy.NONE)
-                .load(Uri.parse(countriesItem.flag))
-                .into(item.imageView);
+//            glid.diskCacheStrategy(DiskCacheStrategy.NONE)
+//                .load(Uri.parse(countriesItem.flag))
+//                .into(item.imageView);
+//            Glide.with(item.root.context)
+//                .load(countriesItem.flag)
+//                .into(item.imageView)
+            LoadImageSVG.fetchSvg(item.root.context, countriesItem.flag, item.imageView);
             item.countriesItem = countriesItem
 
             item.root.setOnClickListener {
