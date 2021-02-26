@@ -1,21 +1,14 @@
 package com.nurbk.ps.countryweather.di
 
 import android.content.Context
-import android.graphics.drawable.PictureDrawable
-import android.net.Uri
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.StreamEncoder
-import com.bumptech.glide.load.resource.file.FileToStreamDecoder
-import com.caverock.androidsvg.SVG
-import com.nurbk.ps.countryweather.utils.SvgDecoder
-import com.nurbk.ps.countryweather.utils.SvgDrawableTranscoder
-import com.nurbk.ps.countryweather.utils.SvgSoftwareLayerSetter
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.io.InputStream
 import javax.inject.Singleton
 
 
@@ -27,25 +20,29 @@ object  AppModule {
     @Provides
     fun provideGlideInstance(
         @ApplicationContext context: Context
-    ) = Glide.with(context)
+    ) = Glide.with(context).setDefaultRequestOptions(
+        RequestOptions()
+//            .placeholder(R.drawable.ic_image)
+//            .error(R.drawable.ic_image)
+            .diskCacheStrategy(DiskCacheStrategy.DATA)
+    )
 
-
-    @Singleton
-    @Provides
-    fun genericRequestBuilder(
-        @ApplicationContext context: Context
-    ) = Glide.with(context)
-        .using(
-            Glide.buildStreamModelLoader(Uri::class.java, context),
-            InputStream::class.java
-        )
-        .from(Uri::class.java)
-        .`as`(SVG::class.java)
-        .transcode(SvgDrawableTranscoder(), PictureDrawable::class.java)
-        .sourceEncoder(StreamEncoder())
-        .cacheDecoder(FileToStreamDecoder<SVG>(SvgDecoder()))
-        .decoder(SvgDecoder())
-        .listener(SvgSoftwareLayerSetter<Uri>())
+//    @Singleton
+//    @Provides
+//    fun genericRequestBuilder(
+//        @ApplicationContext context: Context
+//    ) = Glide.with(this)
+//        .using(Glide.buildStreamModelLoader(Uri::class.java, this), InputStream::class.java)
+//        .from(Uri::class.java)
+//        .`as`(SVG::class.java)
+//        .transcode(SvgDrawableTranscoder(), PictureDrawable::class.java)
+//        .sourceEncoder(StreamEncoder())
+//        .cacheDecoder(FileToStreamDecoder<SVG>(SvgDecoder()))
+//        .decoder(SvgDecoder())
+//        .placeholder(R.drawable.image_loading)
+//        .error(R.drawable.image_error)
+//        .animate(R.anim.fade_in)
+//        .listener(SvgSoftwareLayerSetter<Uri>())
 
 
 }
