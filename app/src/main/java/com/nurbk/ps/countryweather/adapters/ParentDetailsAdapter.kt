@@ -27,14 +27,13 @@ class ParentDetailsAdapter @Inject constructor(
             itemAdapter = ItemParentDetailsAdapter()
             item.rcData.apply {
                 adapter = itemAdapter
-                itemAdapter.data = data
-                layoutManager=
-                    StaggeredGridLayoutManager(3, GridLayoutManager.HORIZONTAL)
 
-//                } else {
-//                    if (data.data.size > 16) data.data = ArrayList(data.data.subList(0, 16))
-//                    GridLayoutManager(item.root.context, 4)
-//                }
+                itemAdapter.data = data
+                layoutManager = if (data.type == 4) {
+                    StaggeredGridLayoutManager(1, GridLayoutManager.HORIZONTAL)
+                } else {
+                    StaggeredGridLayoutManager(4, GridLayoutManager.HORIZONTAL)
+                }
             }
         }
     }
