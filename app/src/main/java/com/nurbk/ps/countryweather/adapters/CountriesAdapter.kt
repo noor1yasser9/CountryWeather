@@ -23,21 +23,15 @@ constructor(
     inner class CountriesViewHolder(val item: ItemCountriesBinding) :
         RecyclerView.ViewHolder(item.root) {
         fun bind(countriesItem: CountriesItem) {
-
-//            if (countriesItem.name == ("Israel")) {
-//                countriesItem.name = "Palestine"
-//                countriesItem.flag = "https://restcountries.eu/data/pse.svg"
-//            }
+            if (countriesItem.name == ("Israel")) {
+                countriesItem.name = "Palestine"
+                countriesItem.flag = "https://restcountries.eu/data/pse.svg"
+            }
             item.txtName.setSingleLine()
             item.txtName.isSelected = true
-//            glid.diskCacheStrategy(DiskCacheStrategy.NONE)
-//                .load(Uri.parse(countriesItem.flag))
-//                .into(item.imageView);
-//            Glide.with(item.root.context)
-//                .load(countriesItem.flag)
-//                .into(item.imageView)
             LoadImageSVG.fetchSvg(item.root.context, countriesItem.flag, item.imageView);
             item.countriesItem = countriesItem
+
 
             item.root.setOnClickListener {
                 onItemClickListener?.let {
