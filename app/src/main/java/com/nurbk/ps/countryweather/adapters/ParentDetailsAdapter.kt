@@ -3,6 +3,7 @@ package com.nurbk.ps.countryweather.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -34,6 +35,7 @@ class ParentDetailsAdapter @Inject constructor(
                 } else {
                     StaggeredGridLayoutManager(4, GridLayoutManager.HORIZONTAL)
                 }
+                itemAnimator = DefaultItemAnimator()
             }
         }
     }
