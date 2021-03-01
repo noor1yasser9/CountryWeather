@@ -20,6 +20,7 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var type = 1
 
+
     inner class WeatherViewHolder(val mBinding: ItemWeatherHourBinding) :
         RecyclerView.ViewHolder(mBinding.root) {
         fun bind(
@@ -72,11 +73,17 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             if (item.deg < 0 && item.deg > -0.5) {
                 item.deg = 0
             }
-//            mBinding.tempTextView.text = String.format(
-//                Locale.getDefault(),
-//                "%.0f°",
-//                item.deg
-//            )
+            mBinding.dateTextView.text = java.lang.String.format(
+                Locale.getDefault(), "%s %d",
+                ConstanceString.MONTH_NAME[calendar[Calendar.MONTH]],
+                calendar[Calendar.DAY_OF_MONTH]
+            )
+            mBinding.weatherImageView.setAnimation(
+                AppUtil.getWeatherAnimation(
+                    item.weather!![0].id
+                )
+            )
+            mBinding.weatherImageView.playAnimation()
             mBinding.minTempTextView.text = String.format(
                 Locale.getDefault(),
                 "%.0f°",
