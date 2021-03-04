@@ -24,7 +24,7 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     inner class WeatherViewHolder(val mBinding: ItemWeatherHourBinding) :
         RecyclerView.ViewHolder(mBinding.root) {
         fun bind(
-            item: ItemHourly, position: Int
+            item: ItemHourly, position: Int,
         ) {
             if (position == 2) {
                 mBinding.view.isGone = true
@@ -46,13 +46,18 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 )
             )
             mBinding.weatherImageView.playAnimation()
+            mBinding.root.setOnClickListener {
+                onItemClickListener?.let {
+                    it(item)
+                }
+            }
         }
     }
 
     inner class DaysWeatherViewHolder(val mBinding: ItemWeatherDayBinding) :
         RecyclerView.ViewHolder(mBinding.root) {
         fun bind(
-            item: ListItem
+            item: ListItem,
         ) {
 
             val calendar = Calendar.getInstance(TimeZone.getDefault())
@@ -95,6 +100,11 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 item.temp!!.max
             )
 
+            mBinding.root.setOnClickListener {
+                onItemClickListener?.let {
+                    it(item)
+                }
+            }
 
         }
     }
@@ -171,4 +181,13 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             return 1
         return 0
     }
+
+    private var onItemClickListener: ((Any) -> Unit)? = null
+    fun setItemClickListener(listener: (Any) -> Unit) {
+        onItemClickListener = listener
+    }
+
 }
+
+
+
