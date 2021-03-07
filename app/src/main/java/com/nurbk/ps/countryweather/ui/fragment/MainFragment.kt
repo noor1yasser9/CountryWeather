@@ -1,0 +1,128 @@
+package com.nurbk.ps.countryweather.ui.fragment
+
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.SearchView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.GridLayoutManager
+import com.nurbk.ps.countryweather.R
+import com.nurbk.ps.countryweather.adapters.CountriesAdapter
+import com.nurbk.ps.countryweather.databinding.FragmentMainBinding
+import com.nurbk.ps.countryweather.model.countries.Countries
+import com.nurbk.ps.countryweather.ui.viewmodel.CountriesViewModel
+import com.nurbk.ps.countryweather.utils.ConstanceString
+import com.nurbk.ps.countryweather.utils.Result
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
+
+
+@AndroidEntryPoint
+class MainFragment : Fragment() {
+
+    private lateinit var mBinding: FragmentMainBinding
+
+    private val viewModel: CountriesViewModel by activityViewModels()
+
+    @Inject
+    lateinit var countriesAdapter: CountriesAdapter
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        mBinding = FragmentMainBinding.inflate(inflater, container, false).apply {
+            executePendingBindings()
+        }
+        requireActivity().title = getString(R.string.countries)
+        return mBinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.getCountriesLiveData().collect {
+                when (it.status) {
+                    Result.Status.LOADING -> {
+                    }
+                    Result.Status.SUCCESS -> {
+                        val data = it.data as Countries
+                        countriesAdapter.countriesList = data
+                    }
+                    Result.Status.ERROR -> {
+                    }
+                }
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.getSearchLiveData().collect {
+                when (it.status) {
+                    Result.Status.LOADING -> {
+                        Log.e("tttttttttt", "LOADING")
+
+                    }
+                    Result.Status.SUCCESS -> {
+                        val data = it.data as Countries
+                        countriesAdapter.countriesList = data
+                    }
+                    Result.Status.ERROR -> {
+                    }
+                }
+            }
+        }
+        mBinding.rcData.apply {
+            adapter = countriesAdapter
+            layoutManager = GridLayoutManager(requireContext(), 3)
+            itemAnimator = DefaultItemAnimator()
+        }
+
+
+        var isSearching = false
+
+        mBinding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (!newText.isNullOrEmpty()) {
+                    Log.e("ttttttt", "$newText")
+                    viewModel.searchCountries(newText)
+                    isSearching = true
+                } else {
+                    if (isSearching) {
+                        isSearching = false
+                        viewModel.getAllCountries()
+                    }
+                }
+                return false
+            }
+        })
+
+        countriesAdapter.setItemClickListener { country ->
+            val bundle = Bundle()
+            bundle.putParcelable(ConstanceString.DATA_DETAILS, country)
+            viewModel.getAllCitiesByCountries(country.alpha2Code, country.capital).also {
+                Navigation.findNavController(requireView())
+                    .navigate(R.id.action_mainFragment_to_detailsFragment, bundle)
+            }
+
+        }
+
+
+    }
+
+}
