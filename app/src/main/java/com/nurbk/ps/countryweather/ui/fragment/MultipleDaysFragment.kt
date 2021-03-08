@@ -2,7 +2,6 @@ package com.nurbk.ps.countryweather.ui.fragment
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -115,7 +114,6 @@ class MultipleDaysFragment : BottomSheetDialogFragment() {
                     onChange?.let {
                         it.onChanged(slide)
                     }
-                    Log.e("tttttttt", slide.toString())
                 }
             })
         }
