@@ -1,12 +1,15 @@
 package com.nurbk.ps.countryweather.model.weather.fivedayweather
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.nurbk.ps.countryweather.model.weather.common.Clouds
 import com.nurbk.ps.countryweather.model.weather.common.WeatherItem
 import com.nurbk.ps.countryweather.model.weather.common.Wind
 import com.nurbk.ps.countryweather.model.weather.currentweather.Main
 import com.nurbk.ps.countryweather.model.weather.currentweather.Sys
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class ItemHourly(
     @SerializedName("dt")
     var dt: Int = 0,
@@ -24,4 +27,4 @@ data class ItemHourly(
     var wind: Wind? = null,
     @SerializedName("rain")
     var rain: Rain? = null,
-)
+) : Parcelable

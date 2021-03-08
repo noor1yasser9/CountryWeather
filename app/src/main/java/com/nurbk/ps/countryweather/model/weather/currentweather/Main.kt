@@ -1,7 +1,10 @@
 package com.nurbk.ps.countryweather.model.weather.currentweather
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Main(
     @SerializedName("temp")
     var temp: Double = 0.0,
@@ -23,4 +26,4 @@ data class Main(
 
     @SerializedName("temp_max")
     var tempMax: Double = 0.0,
-)
+):Parcelable
