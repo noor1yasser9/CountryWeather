@@ -52,6 +52,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
     }
 
@@ -64,7 +65,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
             executePendingBindings()
         }
         requireActivity().title = getString(R.string.detailsCountries)
-
+        mBinding.mapView.onCreate(savedInstanceState)
         bundle = requireArguments()
         return mBinding.root
     }
@@ -140,7 +141,6 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
             itemAnimator = DefaultItemAnimator()
         }
 
-        mBinding.mapView.onCreate(savedInstanceState)
         mBinding.txtName.apply {
             setSingleLine()
             isSelected = true
@@ -212,16 +212,16 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         mBinding.mapView.onResume()
     }
 
-//
-//    override fun onPause() {
-//        super.onPause()
-//        mBinding.mapView.onPause()
-//    }
-//
-//    override fun onStop() {
-//        super.onStop()
-//        mBinding.mapView.onStop()
-//    }
+
+    override fun onPause() {
+        super.onPause()
+        mBinding.mapView.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mBinding.mapView.onStop()
+    }
 
 
     override fun onLowMemory() {
@@ -229,9 +229,8 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         mBinding.mapView.onLowMemory()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        mBinding.mapView.onSaveInstanceState(outState)
-    }
+
+
+  
 
 }
