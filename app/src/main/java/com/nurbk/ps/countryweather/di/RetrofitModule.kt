@@ -1,9 +1,6 @@
 package com.nurbk.ps.countryweather.di
 
-import com.nurbk.ps.countryweather.network.CitiesInterface
-import com.nurbk.ps.countryweather.network.CountriesInterface
-import com.nurbk.ps.countryweather.network.PhotoInterface
-import com.nurbk.ps.countryweather.network.WeatherInterface
+import com.nurbk.ps.countryweather.network.*
 import com.nurbk.ps.countryweather.utils.ConstanceString
 import dagger.Module
 import dagger.Provides
@@ -44,6 +41,11 @@ object RetrofitModule {
     @Singleton
     fun citiesInterface() =
         InstaceRetrofit(ConstanceString.BASE_URL_CITIES).create(CitiesInterface::class.java)
+
+    @Provides
+    @Singleton
+    fun countriesPageInterface() =
+        InstaceRetrofit(ConstanceString.BASE_URL_COUNTRIES_PAGE).create(CountriesPageInterface::class.java)
 
     @Provides
     @Singleton
