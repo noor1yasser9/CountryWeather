@@ -3,35 +3,31 @@ package com.nurbk.ps.countryweather.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.nurbk.ps.countryweather.R
 import com.nurbk.ps.countryweather.databinding.ItemCountriesBinding
-import com.nurbk.ps.countryweather.model.countries.CountriesItem
-import com.nurbk.ps.countryweather.utils.LoadImageSVG
+import com.nurbk.ps.countryweather.model.countries.CountriesPageItem
 import javax.inject.Inject
 
 
 class CountriesAdapter
 @Inject
 constructor(
-    val glide: RequestManager
+    val glide: RequestManager,
 ) :
     RecyclerView.Adapter<CountriesAdapter.CountriesViewHolder>() {
     inner class CountriesViewHolder(val item: ItemCountriesBinding) :
         RecyclerView.ViewHolder(item.root) {
-        fun bind(countriesItem: CountriesItem) {
-            if (countriesItem.name == ("Israel")) {
-                countriesItem.name = "Palestine"
-                countriesItem.flag = "https://restcountries.eu/data/pse.svg"
-            }
+        fun bind(countriesItem: CountriesPageItem) {
+//            if (countriesItem.name == ("Israel")) {
+//                countriesItem.name = "Palestine"
+//                countriesItem.flag = "https://restcountries.eu/data/pse.svg"
+//            }
             item.txtName.setSingleLine()
             item.txtName.isSelected = true
-            LoadImageSVG.fetchSvg(item.root.context, countriesItem.flag, item.imageView);
             item.countriesItem = countriesItem
-
+            glide.load(countriesItem.countryInfo.flag).into(item.imageView)
 
             item.root.setOnClickListener {
                 onItemClickListener?.let {
@@ -41,22 +37,8 @@ constructor(
         }
     }
 
-    private val diffCallback = object : DiffUtil.ItemCallback<CountriesItem>() {
-        override fun areItemsTheSame(oldItem: CountriesItem, newItem: CountriesItem): Boolean {
-            return oldItem.name == newItem.name
-        }
 
-        override fun areContentsTheSame(oldItem: CountriesItem, newItem: CountriesItem): Boolean {
-            return oldItem.hashCode() == newItem.hashCode()
-        }
-    }
-
-
-    val differ = AsyncListDiffer(this, diffCallback)
-
-    var countriesList: List<CountriesItem>
-        get() = differ.currentList
-        set(value) = differ.submitList(value)
+    var countriesList: List<CountriesPageItem> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountriesViewHolder {
         return CountriesViewHolder(
@@ -75,9 +57,9 @@ constructor(
     override fun getItemCount() = countriesList.size
 
 
-    private var onItemClickListener: ((CountriesItem) -> Unit)? = null
+    private var onItemClickListener: ((CountriesPageItem) -> Unit)? = null
 
-    fun setItemClickListener(listener: (CountriesItem) -> Unit) {
+    fun setItemClickListener(listener: (CountriesPageItem) -> Unit) {
         onItemClickListener = listener
     }
 

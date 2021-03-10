@@ -22,6 +22,7 @@ class ParentDetailsAdapter @Inject constructor(
 
     inner class ParentDetailsViewHolder(val item: ItemDetailsBinding) :
         RecyclerView.ViewHolder(item.root) {
+
         lateinit var itemAdapter: ItemParentDetailsAdapter
         fun bind(data: ObjectDetails) {
             item.item = data

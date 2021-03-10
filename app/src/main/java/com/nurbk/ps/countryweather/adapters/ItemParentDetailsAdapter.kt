@@ -14,8 +14,8 @@ import com.nurbk.ps.countryweather.model.countries.Currency
 import com.nurbk.ps.countryweather.model.countries.Language
 import com.nurbk.ps.countryweather.model.photos.Photo
 
-class ItemParentDetailsAdapter constructor(
-//     val glide: RequestManager
+class ItemParentDetailsAdapter  constructor(
+
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var data = ObjectDetails("", "", arrayListOf(), -1)
@@ -48,43 +48,50 @@ class ItemParentDetailsAdapter constructor(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if (viewType == 1) {
-            return ItemImageViewHolder(
-                DataBindingUtil.inflate(
-                    LayoutInflater.from(parent.context), R.layout.item_image, parent, false
+        when (viewType) {
+            1 -> {
+                return ItemImageViewHolder(
+                    DataBindingUtil.inflate(
+                        LayoutInflater.from(parent.context), R.layout.item_image, parent, false
+                    )
                 )
-            )
-        } else if (viewType == 2) {
-            return ItemCitiesViewHolder(
-                DataBindingUtil.inflate(
-                    LayoutInflater.from(parent.context), R.layout.item_cities, parent, false
+            }
+            2 -> {
+                return ItemCitiesViewHolder(
+                    DataBindingUtil.inflate(
+                        LayoutInflater.from(parent.context), R.layout.item_cities, parent, false
+                    )
                 )
-            )
-        } else {
-            return ItemBordersViewHolder(
-                DataBindingUtil.inflate(
-                    LayoutInflater.from(parent.context), R.layout.item_cities, parent, false
+            }
+            else -> {
+                return ItemBordersViewHolder(
+                    DataBindingUtil.inflate(
+                        LayoutInflater.from(parent.context), R.layout.item_cities, parent, false
+                    )
                 )
-            )
+            }
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is ItemImageViewHolder) {
-            holder.bind(data.data[position] as Photo)
-        } else if (holder is ItemCitiesViewHolder) {
-            holder.bind(data.data[position] as City)
-        } else if (holder is ItemBordersViewHolder) {
-            if (data.data[position] is Currency)
-                try {
-                    holder.bind((data.data[position] as Currency).symbol)
-                } catch (e: Exception) {
-                    e.printStackTrace()
+        when (holder) {
+            is ItemImageViewHolder -> {
+                holder.bind(data.data[position] as Photo)
+            }
+            is ItemCitiesViewHolder -> {
+                holder.bind(data.data[position] as City)
+            }
+            is ItemBordersViewHolder -> {
+                when {
+                    data.data[position] is Currency -> try {
+                        holder.bind((data.data[position] as Currency).symbol)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                    data.data[position] is Language -> holder.bind((data.data[position] as Language).name)
+                    else -> holder.bind(data.data[position].toString())
                 }
-            else if (data.data[position] is Language)
-                holder.bind((data.data[position] as Language).name)
-            else
-                holder.bind(data.data[position].toString())
+            }
         }
     }
 
