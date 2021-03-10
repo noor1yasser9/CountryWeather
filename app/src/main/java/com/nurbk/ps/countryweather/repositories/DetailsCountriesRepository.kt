@@ -1,8 +1,8 @@
 package com.nurbk.ps.countryweather.repositories
 
-import android.util.Log
 import com.nurbk.ps.countryweather.model.ObjectDetails
 import com.nurbk.ps.countryweather.network.CitiesInterface
+import com.nurbk.ps.countryweather.network.CountriesInterface
 import com.nurbk.ps.countryweather.network.PhotoInterface
 import com.nurbk.ps.countryweather.network.WeatherInterface
 import com.nurbk.ps.countryweather.utils.Result
@@ -19,10 +19,15 @@ import javax.inject.Singleton
 
 @Singleton
 class DetailsCountriesRepository @Inject constructor(
-    val data: CitiesInterface, val photos: PhotoInterface, val weather: WeatherInterface
+    val countriesInterface: CountriesInterface,
+    val data: CitiesInterface,
+    val photos: PhotoInterface,
+    val weather: WeatherInterface,
 ) {
 
     private val countriesMutableLiveData: MutableStateFlow<Result<Any>> =
+        MutableStateFlow(Result.empty(""))
+    private val countriesNameMutableLiveData: MutableStateFlow<Result<Any>> =
         MutableStateFlow(Result.empty(""))
     private val photosMutableLiveData: MutableStateFlow<Result<Any>> =
         MutableStateFlow(Result.empty(""))
@@ -79,7 +84,6 @@ class DetailsCountriesRepository @Inject constructor(
             photosMutableLiveData.emit(Result.loading("Loading"))
             val response =
                 photos.getMethodData(method = "flickr.photos.search", text = "City $countryName")
-            Log.e("tttttt", response.body().toString())
             withContext(Dispatchers.Main) {
                 try {
                     if (response.isSuccessful) {
@@ -176,7 +180,33 @@ class DetailsCountriesRepository @Inject constructor(
         }
     }
 
+
+    fun getNameCountries(name: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            countriesMutableLiveData.emit(Result.loading("loading"))
+            val response = countriesInterface.getCountriesName(name)
+            withContext(Dispatchers.Main) {
+                try {
+                    if (response.isSuccessful) {
+                        response.body()?.let {
+                            countriesNameMutableLiveData.emit(Result.success(it[0]))
+                        }
+
+                    } else {
+                        countriesNameMutableLiveData.emit(Result.success("Ooops: ${response.errorBody()}"))
+                    }
+                } catch (e: HttpException) {
+                    countriesNameMutableLiveData.emit(Result.success("Ooops: ${e.message()}"))
+
+                } catch (t: Throwable) {
+                    countriesNameMutableLiveData.emit(Result.success("Ooops: ${t.message}"))
+                }
+            }
+        }
+    }
+
     fun getCitiesLiveData(): StateFlow<Result<Any>> = countriesMutableLiveData
+    fun getCountryNameLiveData(): StateFlow<Result<Any>> = countriesNameMutableLiveData
     fun getWeatherLiveData(): StateFlow<Result<Any>> = weatherMutableLiveData
     fun getFiveWeatherLiveData(): StateFlow<Result<Any>> = fiveWeatherMutableLiveData
     fun getPhotosLiveData(): StateFlow<Result<Any>> = photosMutableLiveData

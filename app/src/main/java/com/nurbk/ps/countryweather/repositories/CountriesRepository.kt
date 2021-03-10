@@ -1,7 +1,8 @@
 package com.nurbk.ps.countryweather.repositories
 
-import com.nurbk.ps.countryweather.model.countries.Countries
+import com.nurbk.ps.countryweather.model.countries.CountriesPage
 import com.nurbk.ps.countryweather.network.CountriesInterface
+import com.nurbk.ps.countryweather.network.CountriesPageInterface
 import com.nurbk.ps.countryweather.utils.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,19 +15,22 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CountriesRepository @Inject constructor(val data: CountriesInterface) {
+class CountriesRepository @Inject constructor(
+    val data: CountriesInterface,
+    val dataPage: CountriesPageInterface,
+) {
 
     private val countriesMutableLiveData: MutableStateFlow<Result<Any>> =
         MutableStateFlow(Result.empty(""))
     private val searchMutableLiveData: MutableStateFlow<Result<Any>> =
         MutableStateFlow(Result.empty(""))
 
-    private lateinit var countries: Countries
+    private lateinit var countries: CountriesPage
     fun getAllCountries() {
 
         CoroutineScope(Dispatchers.IO).launch {
             countriesMutableLiveData.emit(Result.loading("loading"))
-            val response = data.getAllCountries()
+            val response = dataPage.getAllCountries()
             withContext(Dispatchers.Main) {
                 try {
                     if (response.isSuccessful) {
@@ -48,13 +52,14 @@ class CountriesRepository @Inject constructor(val data: CountriesInterface) {
         }
     }
 
+
     suspend fun searchCountries(name: String) {
         searchMutableLiveData.emit(Result.loading("loading"))
-        val data = Countries()
+        val data = CountriesPage()
         if (!countries.isNullOrEmpty()) {
 
             countries.forEach {
-                if (it.name.contains(name, true)) {
+                if (it.country.contains(name, true)) {
                     data.add(it)
                 }
             }
