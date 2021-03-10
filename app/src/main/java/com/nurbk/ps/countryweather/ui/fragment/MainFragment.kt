@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.nurbk.ps.countryweather.R
 import com.nurbk.ps.countryweather.adapters.CountriesAdapter
 import com.nurbk.ps.countryweather.databinding.FragmentMainBinding
-import com.nurbk.ps.countryweather.model.countries.Countries
+import com.nurbk.ps.countryweather.model.countries.CountriesPage
 import com.nurbk.ps.countryweather.ui.viewmodel.CountriesViewModel
 import com.nurbk.ps.countryweather.utils.ConstanceString
 import com.nurbk.ps.countryweather.utils.Result
@@ -38,7 +38,7 @@ class MainFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         mBinding = FragmentMainBinding.inflate(inflater, container, false).apply {
             executePendingBindings()
@@ -58,8 +58,9 @@ class MainFragment : Fragment() {
                     Result.Status.LOADING -> {
                     }
                     Result.Status.SUCCESS -> {
-                        val data = it.data as Countries
+                        val data = it.data as CountriesPage
                         countriesAdapter.countriesList = data
+                        countriesAdapter.notifyDataSetChanged()
                     }
                     Result.Status.ERROR -> {
                     }
@@ -70,12 +71,11 @@ class MainFragment : Fragment() {
             viewModel.getSearchLiveData().collect {
                 when (it.status) {
                     Result.Status.LOADING -> {
-                        Log.e("tttttttttt", "LOADING")
-
                     }
                     Result.Status.SUCCESS -> {
-                        val data = it.data as Countries
+                        val data = it.data as CountriesPage
                         countriesAdapter.countriesList = data
+                        countriesAdapter.notifyDataSetChanged()
                     }
                     Result.Status.ERROR -> {
                     }
@@ -115,11 +115,9 @@ class MainFragment : Fragment() {
         countriesAdapter.setItemClickListener { country ->
             val bundle = Bundle()
             bundle.putParcelable(ConstanceString.DATA_DETAILS, country)
-            viewModel.getAllCitiesByCountries(country.alpha2Code, country.capital).also {
-                Navigation.findNavController(requireView())
-                    .navigate(R.id.action_mainFragment_to_detailsFragment, bundle)
-            }
-
+            Navigation.findNavController(requireView())
+                .navigate(R.id.action_mainFragment_to_detailsFragment, bundle)
+            viewModel.getNameCountries(country.countryInfo.iso2, country.country)
         }
 
 

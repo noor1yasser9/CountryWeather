@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.RequestManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -21,10 +22,10 @@ import com.nurbk.ps.countryweather.databinding.FragmentDealitsBinding
 import com.nurbk.ps.countryweather.model.DetailsData
 import com.nurbk.ps.countryweather.model.ObjectDetails
 import com.nurbk.ps.countryweather.model.countries.CountriesItem
+import com.nurbk.ps.countryweather.model.countries.CountriesPageItem
 import com.nurbk.ps.countryweather.model.weather.currentweather.CurrentWeatherResponse
 import com.nurbk.ps.countryweather.ui.viewmodel.CitiesViewModel
 import com.nurbk.ps.countryweather.utils.ConstanceString.DATA_DETAILS
-import com.nurbk.ps.countryweather.utils.LoadImageSVG
 import com.nurbk.ps.countryweather.utils.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -42,6 +43,8 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     @Inject
     lateinit var parentAdapter: ParentDetailsAdapter
 
+    @Inject
+    lateinit var glide: RequestManager
 
     private lateinit var countriesItem: CountriesItem
     private lateinit var bundle: Bundle
@@ -59,13 +62,13 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         mBinding = FragmentDealitsBinding.inflate(inflater, container, false).apply {
             executePendingBindings()
         }
         requireActivity().title = getString(R.string.detailsCountries)
-        mBinding.mapView.onCreate(savedInstanceState)
+//        mBinding.mapView.onCreate(savedInstanceState)
         bundle = requireArguments()
         return mBinding.root
     }
@@ -76,6 +79,55 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
 
         detailsData.dataList.clear()
         parentAdapter.data = detailsData
+        parentAdapter.data.dataList.clear()
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.getWeatherLiveData().collect {
+                when (it.status) {
+                    Result.Status.LOADING -> {
+                    }
+                    Result.Status.SUCCESS -> {
+                        try {
+                            val data = it.data as CurrentWeatherResponse
+                            mBinding.chip5.apply {
+                                text = data.main!!.temp.toString()
+                                setOnClickListener {
+                                    findNavController().navigate(R.id.action_detailsFragment_to_weatherFragment)
+                                }
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                    Result.Status.ERROR -> {
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.getCountryNameLiveData().collect {
+                when (it.status) {
+                    Result.Status.LOADING -> {
+                    }
+                    Result.Status.SUCCESS -> {
+                        try {
+                            val data = it.data as CountriesItem
+                            addDataFromBundle("Borders", data.borders, 0)
+                            addDataFromBundle("Currencies", data.currencies, 1)
+                            addDataFromBundle("Languages", data.languages, 2)
+                            mBinding.item = data
+
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+
+                    }
+                    Result.Status.ERROR -> {
+                    }
+                }
+            }
+        }
         lifecycleScope.launchWhenStarted {
             viewModel.getCitiesLiveData().collect {
                 when (it.status) {
@@ -91,30 +143,6 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
             }
 
         }
-        lifecycleScope.launchWhenStarted {
-            viewModel.getWeatherLiveData().collect {
-                when (it.status) {
-                    Result.Status.LOADING -> {
-                    }
-                    Result.Status.SUCCESS -> {
-                        try {
-                            val data = it.data as CurrentWeatherResponse
-                            mBinding.chip5.apply {
-                                text = data.main!!.temp.toString()
-                                setOnClickListener {
-//                                countriesViewModel.getWeather(countriesItem.name)
-                                    findNavController().navigate(R.id.action_detailsFragment_to_weatherFragment)
-                                }
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                    Result.Status.ERROR -> {
-                    }
-                }
-            }
-        }
 
         lifecycleScope.launchWhenStarted {
             viewModel.getPhotosLiveData().collect {
@@ -124,7 +152,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
                     Result.Status.SUCCESS -> {
                         try {
                             val data = it.data as ObjectDetails
-                            addData(data, null, null)
+                            addData(data, null, detailsData.dataList.size)
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -147,17 +175,11 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         }
         mBinding.txtName.setSingleLine()
         mBinding.txtName.isSelected = true
-        bundle.getParcelable<CountriesItem>(DATA_DETAILS)?.let { item ->
-            countriesItem = item
-            mBinding.item = countriesItem
+        bundle.getParcelable<CountriesPageItem>(DATA_DETAILS)?.let { item ->
 
-            LoadImageSVG.fetchSvg(requireContext(), countriesItem.flag, mBinding.imgFlag);
+            glide.load(item.countryInfo.flag).into(mBinding.imageView)
 
-            addDataFromBundle("Borders", item.borders, 0)
-            addDataFromBundle("Currencies", item.currencies, 1)
-            addDataFromBundle("Languages", item.languages, 2)
-
-            mBinding.mapView.getMapAsync(this)
+//            mBinding.mapView.getMapAsync(this)
         }
     }
 
@@ -171,7 +193,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         parentAdapter.notifyItemChanged(detailsData.dataList.indexOf(objectDetails))
     }
 
-    private fun addDataFromBundle(name: String, data: List<Any>, index: Int) {
+    private fun addDataFromBundle(name: String, data: List<Any>, index: Int?) {
         val citiesObject =
             ObjectDetails(UUID.randomUUID().toString(), name, ArrayList(), 4)
         addData(citiesObject, data, index)
@@ -204,33 +226,30 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
 
     override fun onStart() {
         super.onStart()
-        mBinding.mapView.onStart()
+//        mBinding.mapView.onStart()
     }
 
     override fun onResume() {
         super.onResume()
-        mBinding.mapView.onResume()
+//        mBinding.mapView.onResume()
     }
 
 
     override fun onPause() {
         super.onPause()
-        mBinding.mapView.onPause()
+//        mBinding.mapView.onPause()
     }
 
     override fun onStop() {
         super.onStop()
-        mBinding.mapView.onStop()
+//        mBinding.mapView.onStop()
     }
 
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mBinding.mapView.onLowMemory()
+//        mBinding.mapView.onLowMemory()
     }
 
-
-
-  
 
 }
