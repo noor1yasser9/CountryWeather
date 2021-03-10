@@ -25,36 +25,36 @@
     </style>
 
     <style name="TextViewInColoredCard">
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
     <style name="SubTextViewInColoredCard">
-        <item name="android:textColor">@color/grey_10</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="IconInColoredCard">
-        <item name="android:tint">@android:color/white</item>
+        <item name="android:tint">@android:color/black</item>
     </style>
 
     <style name="TempTextView">
         <item name="android:textSize">70sp</item>
-        <item name="android:textColor">@color/grey_10</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="DescriptionTextView">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/grey_10</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="HumidityTextView">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/grey_10</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="WindSpeedTextView">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/grey_10</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="HeadlineTextStyle">

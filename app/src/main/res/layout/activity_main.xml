@@ -3,11 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-    </data>
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.activity.MainActivity">
@@ -15,16 +11,19 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
             android:layout_width="match_parent"
-            app:elevation="0dp"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:paddingTop="16dp">
+            android:paddingTop="16dp"
+            app:elevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
-                app:elevation="0dp"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
+                app:elevation="0dp"
                 app:titleTextAppearance="@style/Toolbar.TitleText"
                 tools:title="Countries" />
         </com.google.android.material.appbar.AppBarLayout>
@@ -33,15 +32,15 @@
             android:id="@+id/fragment_nav_host_home"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             app:defaultNavHost="true"
-            app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/msgToolbar"
+            app:layout_constraintTop_toBottomOf="@+id/appBar"
             app:layout_constraintVertical_bias="1.0"
             app:navGraph="@navigation/nav_main" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
