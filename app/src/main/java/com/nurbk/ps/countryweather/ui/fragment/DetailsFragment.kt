@@ -68,7 +68,6 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
             executePendingBindings()
         }
         requireActivity().title = getString(R.string.detailsCountries)
-//        mBinding.mapView.onCreate(savedInstanceState)
         bundle = requireArguments()
         return mBinding.root
     }

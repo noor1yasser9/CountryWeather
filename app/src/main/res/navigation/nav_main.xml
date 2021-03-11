@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_detailsFragment_to_weatherFragment"
             app:destination="@id/weatherFragment" />
+        <action
+            android:id="@+id/action_detailsFragment_to_seeAllFragment"
+            app:destination="@id/seeAllFragment" />
     </fragment>
     <fragment
         android:id="@+id/weatherFragment"
@@ -32,4 +35,8 @@
         android:id="@+id/multipleDaysFragment"
         android:name="com.nurbk.ps.countryweather.ui.fragment.MultipleDaysFragment"
         android:label="MultipleDaysFragment" />
+    <fragment
+        android:id="@+id/seeAllFragment"
+        android:name="com.nurbk.ps.countryweather.ui.fragment.SeeAllFragment"
+        android:label="See All" />
 </navigation>

@@ -39,10 +39,14 @@
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip5"
                         android:layout_width="wrap_content"
+                        android:gravity="center"
+                        android:padding="8dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="16dp"
+                        app:chipIcon="@drawable/ic_celsius"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
                         app:layout_constraintStart_toStartOf="@+id/textView6"
                         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
@@ -127,6 +131,13 @@
                         app:layout_constraintStart_toStartOf="@+id/txtName"
                         app:layout_constraintTop_toBottomOf="@+id/txtName"
                         tools:text="Capital: Palestina" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_begin="244dp" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.card.MaterialCardView>
