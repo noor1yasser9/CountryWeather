@@ -14,17 +14,17 @@ import com.nurbk.ps.countryweather.model.countries.Currency
 import com.nurbk.ps.countryweather.model.countries.Language
 import com.nurbk.ps.countryweather.model.photos.Photo
 
-class ItemParentDetailsAdapter  constructor(
+class ItemParentDetailsAdapter(var data:ObjectDetails) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var data = ObjectDetails("", "", arrayListOf(), -1)
 
     inner class ItemCitiesViewHolder(val item: ItemCitiesBinding) :
         RecyclerView.ViewHolder(item.root) {
         fun bind(city: City) {
             item.item = city
-            item.root.setOnClickListener {
+            item.chip4.setSingleLine()
+            item.chip4.isSelected = true
+            item.chip4.setOnClickListener {
                 onItemClickListener?.let {
                     it(city)
                 }

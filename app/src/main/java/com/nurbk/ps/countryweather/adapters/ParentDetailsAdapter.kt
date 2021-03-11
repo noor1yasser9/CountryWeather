@@ -2,6 +2,7 @@ package com.nurbk.ps.countryweather.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,6 +12,7 @@ import com.nurbk.ps.countryweather.R
 import com.nurbk.ps.countryweather.databinding.ItemDetailsBinding
 import com.nurbk.ps.countryweather.model.DetailsData
 import com.nurbk.ps.countryweather.model.ObjectDetails
+import com.nurbk.ps.countryweather.model.cities.City
 import javax.inject.Inject
 
 class ParentDetailsAdapter @Inject constructor(
@@ -25,13 +27,11 @@ class ParentDetailsAdapter @Inject constructor(
         RecyclerView.ViewHolder(item.root) {
 
         lateinit var itemAdapter: ItemParentDetailsAdapter
-        fun bind(data: ObjectDetails,position:Int) {
+        fun bind(data: ObjectDetails) {
             item.item = data
-            itemAdapter = ItemParentDetailsAdapter()
+            itemAdapter = ItemParentDetailsAdapter(data)
             item.rcData.apply {
                 adapter = itemAdapter
-
-                itemAdapter.data = data
                 layoutManager = if (data.type == 4) {
                     StaggeredGridLayoutManager(1, GridLayoutManager.HORIZONTAL)
                 } else {
@@ -39,14 +39,17 @@ class ParentDetailsAdapter @Inject constructor(
                 }
                 itemAnimator = DefaultItemAnimator()
             }
-            itemAdapter.setItemClickListener { data ->
+            itemAdapter.setItemClickListener { itemData ->
                 onClick?.let {
-                    it.onClickItemListener(data)
+                    it.onClickItemListener(itemData)
                 }
+            }
+            if (data.data.size > 12 && data.data[0] is City) {
+                item.btnSeeAll.isVisible = true
             }
             item.btnSeeAll.setOnClickListener {
                 onClick?.let {
-                    it.onClickSeeAllListener(position)
+                    it.onClickSeeAllListener(3)
                 }
             }
         }
@@ -61,7 +64,7 @@ class ParentDetailsAdapter @Inject constructor(
     }
 
     override fun onBindViewHolder(holder: ParentDetailsViewHolder, position: Int) {
-        holder.bind(data = data.dataList[position], position)
+        holder.bind(data = data.dataList[position])
     }
 
     override fun getItemCount() = data.dataList.size
