@@ -32,13 +32,12 @@ class MainActivity : AppCompatActivity() {
         )
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            when  {
-                destination.id != R.id.mainFragment -> {
-                    mBinding.toolbar.visibility = View.VISIBLE
+            when (destination.id) {
+                R.id.mainFragment, R.id.sliderFragment, R.id.seeAllFragment -> {
+                    mBinding.toolbar.visibility = View.GONE
                 }
                 else -> {
-
-                    mBinding.toolbar.visibility = View.GONE
+                    mBinding.toolbar.visibility = View.VISIBLE
                 }
             }
 
