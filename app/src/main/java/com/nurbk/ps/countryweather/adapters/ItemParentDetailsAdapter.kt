@@ -24,6 +24,11 @@ class ItemParentDetailsAdapter  constructor(
         RecyclerView.ViewHolder(item.root) {
         fun bind(city: City) {
             item.item = city
+            item.root.setOnClickListener {
+                onItemClickListener?.let {
+                    it(city)
+                }
+            }
         }
     }
 
@@ -39,6 +44,11 @@ class ItemParentDetailsAdapter  constructor(
         RecyclerView.ViewHolder(item.root) {
         fun bind(photos: Photo) {
             Glide.with(item.root.context).load(getUrl(photos)).into(item.itemImage)
+            item.root.setOnClickListener {
+                onItemClickListener?.let {
+                    it(photos)
+                }
+            }
         }
 
         private fun getUrl(photo: Photo): String {
@@ -105,6 +115,12 @@ class ItemParentDetailsAdapter  constructor(
             return 2
         }
         return 3
+    }
+
+    private var onItemClickListener: ((Any) -> Unit)? = null
+
+    fun setItemClickListener(listener: (Any) -> Unit) {
+        onItemClickListener = listener
     }
 
 }

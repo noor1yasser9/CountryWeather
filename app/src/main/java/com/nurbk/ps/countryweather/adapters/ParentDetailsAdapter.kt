@@ -19,12 +19,13 @@ class ParentDetailsAdapter @Inject constructor(
 
     var data: DetailsData = DetailsData("", arrayListOf())
 
+    var onClick: OnClickListener? = null
 
     inner class ParentDetailsViewHolder(val item: ItemDetailsBinding) :
         RecyclerView.ViewHolder(item.root) {
 
         lateinit var itemAdapter: ItemParentDetailsAdapter
-        fun bind(data: ObjectDetails) {
+        fun bind(data: ObjectDetails,position:Int) {
             item.item = data
             itemAdapter = ItemParentDetailsAdapter()
             item.rcData.apply {
@@ -38,6 +39,16 @@ class ParentDetailsAdapter @Inject constructor(
                 }
                 itemAnimator = DefaultItemAnimator()
             }
+            itemAdapter.setItemClickListener { data ->
+                onClick?.let {
+                    it.onClickItemListener(data)
+                }
+            }
+            item.btnSeeAll.setOnClickListener {
+                onClick?.let {
+                    it.onClickSeeAllListener(position)
+                }
+            }
         }
     }
 
@@ -50,10 +61,14 @@ class ParentDetailsAdapter @Inject constructor(
     }
 
     override fun onBindViewHolder(holder: ParentDetailsViewHolder, position: Int) {
-        holder.bind(data = data.dataList[position])
+        holder.bind(data = data.dataList[position], position)
     }
 
     override fun getItemCount() = data.dataList.size
 
+    interface OnClickListener {
+        fun onClickItemListener(data: Any)
+        fun onClickSeeAllListener(i: Int)
+    }
 
 }

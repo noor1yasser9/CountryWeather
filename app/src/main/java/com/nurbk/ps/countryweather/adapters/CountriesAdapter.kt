@@ -20,10 +20,6 @@ constructor(
     inner class CountriesViewHolder(val item: ItemCountriesBinding) :
         RecyclerView.ViewHolder(item.root) {
         fun bind(countriesItem: CountriesPageItem) {
-//            if (countriesItem.name == ("Israel")) {
-//                countriesItem.name = "Palestine"
-//                countriesItem.flag = "https://restcountries.eu/data/pse.svg"
-//            }
             item.txtName.setSingleLine()
             item.txtName.isSelected = true
             item.countriesItem = countriesItem
