@@ -91,4 +91,5 @@ dependencies {
     //map
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
+    implementation 'com.github.MikeOrtiz:TouchImageView:3.0.1'
 }
