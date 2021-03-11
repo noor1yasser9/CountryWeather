@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.RequestManager
@@ -21,8 +22,10 @@ import com.nurbk.ps.countryweather.adapters.ParentDetailsAdapter
 import com.nurbk.ps.countryweather.databinding.FragmentDealitsBinding
 import com.nurbk.ps.countryweather.model.DetailsData
 import com.nurbk.ps.countryweather.model.ObjectDetails
+import com.nurbk.ps.countryweather.model.cities.City
 import com.nurbk.ps.countryweather.model.countries.CountriesItem
 import com.nurbk.ps.countryweather.model.countries.CountriesPageItem
+import com.nurbk.ps.countryweather.model.photos.Photo
 import com.nurbk.ps.countryweather.model.weather.currentweather.CurrentWeatherResponse
 import com.nurbk.ps.countryweather.ui.viewmodel.CitiesViewModel
 import com.nurbk.ps.countryweather.utils.ConstanceString.DATA_DETAILS
@@ -111,12 +114,12 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
                     }
                     Result.Status.SUCCESS -> {
                         try {
+                            detailsData.dataList.clear()
                             val data = it.data as CountriesItem
                             addDataFromBundle("Borders", data.borders, 0)
                             addDataFromBundle("Currencies", data.currencies, 1)
                             addDataFromBundle("Languages", data.languages, 2)
                             mBinding.item = data
-
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -177,8 +180,19 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         bundle.getParcelable<CountriesPageItem>(DATA_DETAILS)?.let { item ->
 
             glide.load(item.countryInfo.flag).into(mBinding.imageView)
+        }
 
-//            mBinding.mapView.getMapAsync(this)
+        parentAdapter.onClick = object : ParentDetailsAdapter.OnClickListener {
+            override fun onClickItemListener(data: Any) {
+                if (data is City) {
+                } else if (data is Photo) {
+                    findNavController().navigate(R.id.action_detailsFragment_to_sliderFragment)
+                }
+            }
+
+            override fun onClickSeeAllListener(i: Int) {
+                findNavController().navigate(R.id.action_detailsFragment_to_seeAllFragment)
+            }
         }
     }
 
@@ -186,7 +200,12 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         if (data != null)
             objectDetails.data.addAll(data)
         if (index != null)
-            detailsData.dataList.add(index, objectDetails)
+            try {
+
+                detailsData.dataList.add(index, objectDetails)
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
         else
             detailsData.dataList.add(objectDetails)
         parentAdapter.notifyItemChanged(detailsData.dataList.indexOf(objectDetails))
@@ -222,33 +241,5 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         map.isTrafficEnabled = true
 
     }
-
-    override fun onStart() {
-        super.onStart()
-//        mBinding.mapView.onStart()
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        mBinding.mapView.onResume()
-    }
-
-
-    override fun onPause() {
-        super.onPause()
-//        mBinding.mapView.onPause()
-    }
-
-    override fun onStop() {
-        super.onStop()
-//        mBinding.mapView.onStop()
-    }
-
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-//        mBinding.mapView.onLowMemory()
-    }
-
 
 }

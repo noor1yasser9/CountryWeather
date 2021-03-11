@@ -1,13 +1,12 @@
 package com.nurbk.ps.countryweather.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -29,7 +28,7 @@ class MainFragment : Fragment() {
 
     private lateinit var mBinding: FragmentMainBinding
 
-    private val viewModel: CountriesViewModel by activityViewModels()
+    private val viewModel: CountriesViewModel by viewModels()
 
     @Inject
     lateinit var countriesAdapter: CountriesAdapter
@@ -50,23 +49,8 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        getAllCountries()
 
-
-        lifecycleScope.launchWhenStarted {
-            viewModel.getCountriesLiveData().collect {
-                when (it.status) {
-                    Result.Status.LOADING -> {
-                    }
-                    Result.Status.SUCCESS -> {
-                        val data = it.data as CountriesPage
-                        countriesAdapter.countriesList = data
-                        countriesAdapter.notifyDataSetChanged()
-                    }
-                    Result.Status.ERROR -> {
-                    }
-                }
-            }
-        }
         lifecycleScope.launchWhenStarted {
             viewModel.getSearchLiveData().collect {
                 when (it.status) {
@@ -99,13 +83,12 @@ class MainFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (!newText.isNullOrEmpty()) {
-                    Log.e("ttttttt", "$newText")
                     viewModel.searchCountries(newText)
                     isSearching = true
                 } else {
                     if (isSearching) {
                         isSearching = false
-                        viewModel.getAllCountries()
+                        getAllCountries()
                     }
                 }
                 return false
@@ -123,4 +106,22 @@ class MainFragment : Fragment() {
 
     }
 
+    private fun getAllCountries() {
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.getCountriesLiveData().collect {
+                when (it.status) {
+                    Result.Status.LOADING -> {
+                    }
+                    Result.Status.SUCCESS -> {
+                        val data = it.data as CountriesPage
+                        countriesAdapter.countriesList = data
+                        countriesAdapter.notifyDataSetChanged()
+                    }
+                    Result.Status.ERROR -> {
+                    }
+                }
+            }
+        }
+    }
 }
