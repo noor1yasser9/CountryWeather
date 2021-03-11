@@ -1,6 +1,7 @@
 package com.nurbk.ps.countryweather.repositories
 
 import com.nurbk.ps.countryweather.model.ObjectDetails
+import com.nurbk.ps.countryweather.model.cities.City
 import com.nurbk.ps.countryweather.network.CitiesInterface
 import com.nurbk.ps.countryweather.network.CountriesInterface
 import com.nurbk.ps.countryweather.network.PhotoInterface
@@ -16,6 +17,7 @@ import retrofit2.HttpException
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.ArrayList
 
 @Singleton
 class DetailsCountriesRepository @Inject constructor(
@@ -37,17 +39,26 @@ class DetailsCountriesRepository @Inject constructor(
         MutableStateFlow(Result.empty(""))
     private val daysWeatherLiveData: MutableStateFlow<Result<Any>> =
         MutableStateFlow(Result.empty(""))
+    private val citiesSearchLiveData: MutableStateFlow<Result<Any>> =
+        MutableStateFlow(Result.empty(""))
 
-    private val photosObject: ObjectDetails =
-        ObjectDetails(UUID.randomUUID().toString(), "Photos", ArrayList(), 1)
+    private var photosObject: ObjectDetails? = null
 
-    private val citiesObject: ObjectDetails =
-        ObjectDetails(UUID.randomUUID().toString(), "Cities", ArrayList(), 2)
+    private var citiesObject: ObjectDetails? = null
+    private var searchObject: ObjectDetails? = null
+    private var city: List<City>? = null
 
+    init {
+        photosObject =
+            ObjectDetails(UUID.randomUUID().toString(), "Photos", ArrayList(), 1)
+        citiesObject = ObjectDetails(UUID.randomUUID().toString(), "Cities", ArrayList(), 2)
+        searchObject = ObjectDetails(UUID.randomUUID().toString(), "Cities", ArrayList(), 2)
+
+    }
 
     fun getAllCitiesByCountries(codeCountry: String, nameCountry: String) {
         getWeather(nameCountry)
-        citiesObject.data.clear()
+        citiesObject!!.data.clear()
         CoroutineScope(Dispatchers.IO).launch {
             countriesMutableLiveData.emit(Result.loading("loading"))
             val response = data.getCityByCountry(codeCountry = codeCountry)
@@ -55,10 +66,11 @@ class DetailsCountriesRepository @Inject constructor(
                 try {
                     if (response.isSuccessful) {
                         response.body()?.let {
-                            citiesObject.data.addAll(it.data.cities)
+                            citiesObject!!.data.addAll(it.data.cities)
+                            city = it.data.cities
                             countriesMutableLiveData.emit(
                                 Result.success(
-                                    citiesObject
+                                    citiesObject!!
                                 )
                             )
                         }
@@ -79,7 +91,7 @@ class DetailsCountriesRepository @Inject constructor(
 
 
     private fun getPhotos(countryName: String) {
-        photosObject.data.clear()
+        photosObject!!.data.clear()
         CoroutineScope(Dispatchers.IO).launch {
             photosMutableLiveData.emit(Result.loading("Loading"))
             val response =
@@ -88,8 +100,8 @@ class DetailsCountriesRepository @Inject constructor(
                 try {
                     if (response.isSuccessful) {
                         response.body()?.let {
-                            photosObject.data.addAll(it.photos.photo)
-                            photosMutableLiveData.emit(Result.success(photosObject))
+                            photosObject!!.data.addAll(it.photos.photo)
+                            photosMutableLiveData.emit(Result.success(photosObject!!))
                         }
 
                     } else {
@@ -205,7 +217,36 @@ class DetailsCountriesRepository @Inject constructor(
         }
     }
 
+
+    suspend fun searchCities(name: String) {
+        citiesSearchLiveData.emit(Result.loading("loading"))
+        val data = ArrayList<City>()
+        if (!city.isNullOrEmpty()) {
+            searchObject!!.data.clear()
+            city!!.forEach {
+                if (it.name.contains(name, true)) {
+                    data.add(it)
+                    searchObject!!.data.addAll(data)
+                }
+            }
+            citiesSearchLiveData.emit(
+                Result.success(
+                    searchObject!!,
+                    "isSuccessful"
+                )
+            )
+        } else {
+            citiesSearchLiveData.emit(
+                Result.error(
+                    "Error", Error()
+                )
+            )
+        }
+    }
+
+
     fun getCitiesLiveData(): StateFlow<Result<Any>> = countriesMutableLiveData
+    fun getCitiesSearchLiveData(): StateFlow<Result<Any>> = citiesSearchLiveData
     fun getCountryNameLiveData(): StateFlow<Result<Any>> = countriesNameMutableLiveData
     fun getWeatherLiveData(): StateFlow<Result<Any>> = weatherMutableLiveData
     fun getFiveWeatherLiveData(): StateFlow<Result<Any>> = fiveWeatherMutableLiveData
