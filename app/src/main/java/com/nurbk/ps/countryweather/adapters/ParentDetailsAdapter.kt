@@ -13,8 +13,9 @@ import com.nurbk.ps.countryweather.databinding.ItemDetailsBinding
 import com.nurbk.ps.countryweather.model.DetailsData
 import com.nurbk.ps.countryweather.model.ObjectDetails
 import com.nurbk.ps.countryweather.model.cities.City
+import javax.inject.Inject
 
-class ParentDetailsAdapter constructor(
+class ParentDetailsAdapter @Inject constructor(
 
 ) : RecyclerView.Adapter<ParentDetailsAdapter.ParentDetailsViewHolder>() {
 
