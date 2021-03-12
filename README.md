@@ -31,7 +31,7 @@ Weatherapp is a simple weather forecast app, which uses some APIs to fetch 5 day
 - [StateFlow]: StateFlow and SharedFlow are Flow APIs that enable flows to optimally emit state updates and emit values to multiple consumers.
 
 
-
+[Material Design]: https://material.io/develop/android/
 [OpenWeatherMap]: https://openweathermap.org/
 [restcountries]: https://restcountries.eu
 [disease]: https://disease.sh
