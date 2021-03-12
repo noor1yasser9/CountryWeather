@@ -36,6 +36,8 @@ class DetailsCountriesRepository @Inject constructor(
         MutableStateFlow(Result.empty(""))
     private val weatherMutableLiveData: MutableStateFlow<Result<Any>> =
         MutableStateFlow(Result.empty(""))
+    private val weatherCityMutableLiveData: MutableStateFlow<Result<Any>> =
+        MutableStateFlow(Result.empty(""))
     private val fiveWeatherMutableLiveData: MutableStateFlow<Result<Any>> =
         MutableStateFlow(Result.empty(""))
     private val daysWeatherLiveData: MutableStateFlow<Result<Any>> =
@@ -145,6 +147,32 @@ class DetailsCountriesRepository @Inject constructor(
         }
     }
 
+    fun getWeatherCity(query: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            weatherCityMutableLiveData.emit(Result.loading("Loading"))
+            val response = weather.getCurrentWeather(q = query)
+            withContext(Dispatchers.Main) {
+                try {
+                    if (response.isSuccessful) {
+                        response.body()?.let {
+                            Log.e("Tttttt", it.toString())
+                            weatherCityMutableLiveData.emit(Result.success(it))
+                            getFiveWeather(query)
+                        }
+
+                    } else {
+                        weatherCityMutableLiveData.emit(Result.success("Ooops: ${response.errorBody()}"))
+                    }
+                } catch (e: HttpException) {
+                    weatherCityMutableLiveData.emit(Result.success("Ooops: ${e.message()}"))
+
+                } catch (t: Throwable) {
+                    weatherCityMutableLiveData.emit(Result.success("Ooops: ${t.message}"))
+                }
+            }
+        }
+    }
+
     private fun getFiveWeather(query: String) {
         CoroutineScope(Dispatchers.IO).launch {
             fiveWeatherMutableLiveData.emit(Result.loading("Loading"))
@@ -169,8 +197,7 @@ class DetailsCountriesRepository @Inject constructor(
         }
     }
 
-    fun getDayWeather(query: String) {
-
+    private fun getDayWeather(query: String) {
         CoroutineScope(Dispatchers.IO).launch {
             daysWeatherLiveData.emit(Result.loading("Loading"))
             val response = weather.getMultipleDaysWeather(q = query)
@@ -206,7 +233,6 @@ class DetailsCountriesRepository @Inject constructor(
                         response.body()?.let {
                             countriesNameMutableLiveData.emit(Result.success(it[0]))
                         }
-
                     } else {
                         countriesNameMutableLiveData.emit(Result.success("Ooops: ${response.errorBody()}"))
                     }
@@ -252,6 +278,7 @@ class DetailsCountriesRepository @Inject constructor(
     fun getCitiesSearchLiveData(): StateFlow<Result<Any>> = citiesSearchLiveData
     fun getCountryNameLiveData(): StateFlow<Result<Any>> = countriesNameMutableLiveData
     fun getWeatherLiveData(): StateFlow<Result<Any>> = weatherMutableLiveData
+    fun getWeatherCityLiveData(): StateFlow<Result<Any>> = weatherCityMutableLiveData
     fun getFiveWeatherLiveData(): StateFlow<Result<Any>> = fiveWeatherMutableLiveData
     fun getPhotosLiveData(): StateFlow<Result<Any>> = photosMutableLiveData
     fun getDaysWeatherLiveData(): StateFlow<Result<Any>> = daysWeatherLiveData
