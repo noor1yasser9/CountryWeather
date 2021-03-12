@@ -21,7 +21,6 @@ Weatherapp is a simple weather forecast app, which uses some APIs to fetch 5 day
 
 **Libraries & Dependencies**
 - [Material Design]: MaterialCardView / MaterialButton / Bottom App Bars / ExtendedFloatingActionButton / appcompat / recyclerview / constraintlayout
-- [Calligraphy3]: Custom fonts in Android the easy way
 - Square [Retrofit] / [Okhttp] / [Logging-Interceptor]
 - [Glide]: An image loading and caching library for Android focused on smooth scrolling
 - [Lottie-Android]: Render After Effects animations natively on Android
@@ -29,7 +28,7 @@ Weatherapp is a simple weather forecast app, which uses some APIs to fetch 5 day
 - [MPAndroidChart]: A powerful & easy to use chart library for Android
 - [Dagger Hilt]: Hilt is a dependency injection library for Android that reduces the boilerplate of doing manual dependency injection in your project
 - [Kotlin coroutines]: A coroutine is a concurrency design pattern that you can use on Android to simplify code that executes asynchronously.
-- [Kotlin coroutines]: StateFlow and SharedFlow are Flow APIs that enable flows to optimally emit state updates and emit values to multiple consumers.
+- [StateFlow]: StateFlow and SharedFlow are Flow APIs that enable flows to optimally emit state updates and emit values to multiple consumers.
 
 
 
