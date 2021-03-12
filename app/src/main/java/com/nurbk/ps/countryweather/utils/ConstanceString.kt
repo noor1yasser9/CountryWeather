@@ -7,7 +7,7 @@ object ConstanceString {
     const val BASE_URL_CITIES = "https://geohub3.p.rapidapi.com/"
     const val BASE_URL_PHOTOS = "https://www.flickr.com/services/"
     const val BASE_URL_WEATHER = "https://api.openweathermap.org/data/2.5/"
-    const val API_KEY_WEATHER = "488525857914c89234b2259c86caf061"
+
 
     const val DATA_DETAILS = "dataDetails"
     const val TIME_TO_PASS = (6 * 600000).toLong()
