@@ -3,7 +3,7 @@ Weatherapp is a simple weather forecast app, which uses some APIs to fetch 5 day
 
 
 ## Screenshot
-![a](https://user-images.githubusercontent.com/41232970/110945103-f1f0bc00-8345-11eb-8b71-d1d933bd189a.png)
+![ss](https://user-images.githubusercontent.com/41232970/110945418-54e25300-8346-11eb-88c1-5ba920968a65.png)
 
 ## ✨ Features Project Android:
 - 100% Kotlin
