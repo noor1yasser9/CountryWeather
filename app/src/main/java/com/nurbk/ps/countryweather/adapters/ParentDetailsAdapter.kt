@@ -13,9 +13,8 @@ import com.nurbk.ps.countryweather.databinding.ItemDetailsBinding
 import com.nurbk.ps.countryweather.model.DetailsData
 import com.nurbk.ps.countryweather.model.ObjectDetails
 import com.nurbk.ps.countryweather.model.cities.City
-import javax.inject.Inject
 
-class ParentDetailsAdapter @Inject constructor(
+class ParentDetailsAdapter constructor(
 
 ) : RecyclerView.Adapter<ParentDetailsAdapter.ParentDetailsViewHolder>() {
 
@@ -27,6 +26,7 @@ class ParentDetailsAdapter @Inject constructor(
         RecyclerView.ViewHolder(item.root) {
 
         lateinit var itemAdapter: ItemParentDetailsAdapter
+
         fun bind(data: ObjectDetails) {
             item.item = data
             itemAdapter = ItemParentDetailsAdapter(data)
