@@ -1,4 +1,4 @@
-package com.nurbk.ps.countryweather.ui.fragment
+package com.nurbk.ps.countryweather.ui.dialog
 
 import android.app.Dialog
 import android.graphics.Color
