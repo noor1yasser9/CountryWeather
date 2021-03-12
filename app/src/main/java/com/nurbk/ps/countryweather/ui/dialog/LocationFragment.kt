@@ -5,14 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nurbk.ps.countryweather.databinding.FragmentLocationBinding
+import com.nurbk.ps.countryweather.model.countries.CountriesItem
+import com.nurbk.ps.countryweather.utils.ConstanceString
 
 class LocationFragment : BottomSheetDialogFragment(), OnMapReadyCallback {
 
     private lateinit var mBinding: FragmentLocationBinding
+    private lateinit var bundle: Bundle
+    private lateinit var countriesItem: CountriesItem
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -28,29 +35,35 @@ class LocationFragment : BottomSheetDialogFragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mBinding.mapView.getMapAsync(this)
+
+
+        requireArguments().getParcelable<CountriesItem>(ConstanceString.DATA_DETAILS)?.let {
+            countriesItem=it
+            mBinding.mapView.getMapAsync(this)
+        }
 
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NO_FRAME, 0);
     }
 
     override fun onMapReady(map: GoogleMap) {
-//        val latLng = LatLng(
-//            countriesItem.latlng[0],
-//            countriesItem.latlng[1]
-//        )
-//        map!!.addMarker(
-//            MarkerOptions()
-//                .position(latLng)
-//                .title(countriesItem.name)
-//        )
-//        map.moveCamera(
-//            CameraUpdateFactory.newLatLngZoom(
-//                latLng, 10f
-//            )
-//        )
+        val latLng = LatLng(
+            countriesItem.latlng[0],
+            countriesItem.latlng[1]
+        )
+        map.addMarker(
+            MarkerOptions()
+                .position(latLng)
+                .title(countriesItem.name)
+        )
+        map.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                latLng, 10f
+            )
+        )
         map.uiSettings.setAllGesturesEnabled(true)
         map.uiSettings.isZoomGesturesEnabled = true
         map.uiSettings.isZoomControlsEnabled = true
