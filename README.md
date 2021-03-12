@@ -7,6 +7,7 @@ Weatherapp is a simple weather forecast app, which uses some APIs to fetch 5 day
 
 ## ✨ Features Project Android:
 - 100% Kotlin
+- Dagger Hilt
 - MVVM architecture
 - Android architecture components
 - Navigation Jetpack
