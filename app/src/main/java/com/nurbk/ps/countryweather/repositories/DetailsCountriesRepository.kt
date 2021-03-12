@@ -1,5 +1,6 @@
 package com.nurbk.ps.countryweather.repositories
 
+import android.util.Log
 import com.nurbk.ps.countryweather.model.ObjectDetails
 import com.nurbk.ps.countryweather.model.cities.City
 import com.nurbk.ps.countryweather.network.CitiesInterface
@@ -126,6 +127,7 @@ class DetailsCountriesRepository @Inject constructor(
                 try {
                     if (response.isSuccessful) {
                         response.body()?.let {
+                            Log.e("Tttttt", it.toString())
                             weatherMutableLiveData.emit(Result.success(it))
                             getFiveWeather(query)
                         }
@@ -167,7 +169,7 @@ class DetailsCountriesRepository @Inject constructor(
         }
     }
 
-    private fun getDayWeather(query: String) {
+    fun getDayWeather(query: String) {
 
         CoroutineScope(Dispatchers.IO).launch {
             daysWeatherLiveData.emit(Result.loading("Loading"))
@@ -176,6 +178,7 @@ class DetailsCountriesRepository @Inject constructor(
                 try {
                     if (response.isSuccessful) {
                         response.body()?.let {
+
                             daysWeatherLiveData.emit(Result.success(it))
                         }
 
