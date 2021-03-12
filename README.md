@@ -4,8 +4,8 @@ Weatherapp is a simple weather forecast app, which uses some APIs to fetch 5 day
 
 ## Requirements
 
-- Android Studio 4.0.0
+- Android Studio 4.1.0
 - JDK 8
-- Android SDK 29
+- Android SDK 30
 - Supports API Level +21
-- Material Components 1.3.0-alpha01
+- Material Components 1.3.0
