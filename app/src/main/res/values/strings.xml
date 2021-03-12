@@ -3,7 +3,7 @@
     <string name="countries">"Countries"</string>
     <string name="detailsCountries">Details Countries</string>
     <string name="see_all">See All</string>
-    <string name="apiKey">AIzaSyDsJvlej1aOfJXpMsPpb7Jr1rtEWOj0oVs</string>
+    <string name="apiKey"></string>
 
 
     <string name="current_label">Current</string>
