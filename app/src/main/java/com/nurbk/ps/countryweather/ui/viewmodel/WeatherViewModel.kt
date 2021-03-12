@@ -6,8 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import com.nurbk.ps.countryweather.repositories.DetailsCountriesRepository
 
 class WeatherViewModel @ViewModelInject constructor(
-val detailsCountriesRepository: DetailsCountriesRepository,
-application: Application
+    val detailsCountriesRepository: DetailsCountriesRepository,
+    application: Application,
 ) : AndroidViewModel(application) {
 
     fun getWeatherLiveData() =
@@ -18,4 +18,6 @@ application: Application
 
     fun getDaysWeatherLiveData() = detailsCountriesRepository.getDaysWeatherLiveData()
 
+
+    fun getWeatherCityLiveData() = detailsCountriesRepository.getWeatherCityLiveData()
 }

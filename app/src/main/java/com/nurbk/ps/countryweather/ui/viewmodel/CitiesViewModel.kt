@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class CitiesViewModel @ViewModelInject constructor(
     val detailsCountriesRepository: DetailsCountriesRepository,
-    application: Application
+    application: Application,
 ) : AndroidViewModel(application) {
 
     fun getCitiesLiveData() = detailsCountriesRepository.getCitiesLiveData()
@@ -20,11 +20,18 @@ class CitiesViewModel @ViewModelInject constructor(
         detailsCountriesRepository.getWeatherLiveData()
 
     fun getPhotosLiveData() = detailsCountriesRepository.getPhotosLiveData()
-    fun getCountryNameLiveData()= detailsCountriesRepository.getCountryNameLiveData()
+    fun getCountryNameLiveData() = detailsCountriesRepository.getCountryNameLiveData()
 
     fun searchCities(name: String) {
         viewModelScope.launch {
             detailsCountriesRepository.searchCities(name)
         }
+    }
+
+    fun getDayWeather(query: String) {
+        detailsCountriesRepository.getWeather(query)
+    }
+    fun getWeatherCity(query: String) {
+        detailsCountriesRepository.getWeatherCity(query)
     }
 }

@@ -20,7 +20,7 @@ class CountriesViewModel @ViewModelInject constructor(
         getAllCountries()
     }
 
-    fun getAllCountries() {
+    private fun getAllCountries() {
         countriesRepository.getAllCountries()
     }
 
