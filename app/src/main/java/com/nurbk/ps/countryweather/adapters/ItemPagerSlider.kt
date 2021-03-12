@@ -37,7 +37,11 @@ class ItemPagerSlider(val glide: RequestManager, var listData: List<Photo>) :
     }
 
     override fun onBindViewHolder(holder: PagerViewHolder, position: Int) {
-        holder.bind(listData[position])
+        try {
+            holder.bind(listData[position])
+        } catch (e: Exception) {
+
+        }
     }
 
     override fun getItemCount() = listData.size

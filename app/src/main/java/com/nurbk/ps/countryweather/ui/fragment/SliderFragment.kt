@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.target.CustomTarget
@@ -30,7 +29,8 @@ import javax.inject.Inject
 class SliderFragment : Fragment() {
 
     private lateinit var mBinding: FragmentSliderBinding
-    private val viewModel: CitiesViewModel by viewModels()
+    @Inject
+    lateinit var  viewModel: CitiesViewModel
 
     @Inject
     lateinit var glide: RequestManager

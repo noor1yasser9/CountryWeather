@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.nurbk.ps.countryweather.R
@@ -24,13 +23,15 @@ import com.nurbk.ps.countryweather.utils.TextViewFactory
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import java.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class WeatherFragment : Fragment() {
 
     private lateinit var mBinding: FragmentWeatherBinding
 
-    private val viewModel: WeatherViewModel by viewModels()
+    @Inject
+    lateinit var viewModel: WeatherViewModel
 
     private val weatherAdapter: WeatherAdapter by lazy {
         WeatherAdapter()

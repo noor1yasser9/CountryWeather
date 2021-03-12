@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -31,7 +30,8 @@ class MainFragment : Fragment() {
 
     private lateinit var mBinding: FragmentMainBinding
 
-    private val viewModel: CountriesViewModel by viewModels()
+    @Inject
+    lateinit var  viewModel: CountriesViewModel
 
     @Inject
     lateinit var countriesAdapter: CountriesAdapter

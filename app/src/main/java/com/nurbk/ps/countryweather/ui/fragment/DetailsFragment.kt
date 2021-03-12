@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -38,7 +37,8 @@ import kotlin.collections.ArrayList
 class DetailsFragment : Fragment() {
 
     private lateinit var mBinding: FragmentDealitsBinding
-    private val viewModel: CitiesViewModel by viewModels()
+    @Inject
+     lateinit var viewModel: CitiesViewModel
     private lateinit var location: LocationFragment
 
     @Inject
@@ -47,7 +47,7 @@ class DetailsFragment : Fragment() {
     @Inject
     lateinit var glide: RequestManager
 
-    private lateinit var bundle: Bundle
+    private lateinit var bundleDetails: Bundle
 
     private val detailsData: DetailsData by lazy {
         DetailsData(UUID.randomUUID().toString(), ArrayList())
@@ -63,7 +63,7 @@ class DetailsFragment : Fragment() {
             executePendingBindings()
         }
         requireActivity().title = getString(R.string.detailsCountries)
-        bundle = requireArguments()
+        bundleDetails = requireArguments()
         return mBinding.root
     }
 
@@ -124,8 +124,9 @@ class DetailsFragment : Fragment() {
                             location = LocationFragment()
                             mBinding.btnLocation.setOnClickListener {
                                 if (!location.isAdded) {
-                                    bundle.putParcelable(DATA_DETAILS, data)
-                                    location.arguments = bundle
+                                    val bundles = Bundle()
+                                    bundles.putParcelable(DATA_DETAILS, data)
+                                    location.arguments = bundles
                                     location.show(requireActivity().supportFragmentManager, "")
                                 }
                             }
@@ -186,7 +187,7 @@ class DetailsFragment : Fragment() {
         }
         mBinding.txtName.setSingleLine()
         mBinding.txtName.isSelected = true
-        bundle.getParcelable<CountriesPageItem>(DATA_DETAILS)?.let { item ->
+        bundleDetails.getParcelable<CountriesPageItem>(DATA_DETAILS)?.let { item ->
             glide.load(item.countryInfo.flag).into(mBinding.imageView)
         }
 

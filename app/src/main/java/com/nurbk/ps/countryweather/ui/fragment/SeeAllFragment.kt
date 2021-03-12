@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,12 +19,14 @@ import com.nurbk.ps.countryweather.ui.viewmodel.CitiesViewModel
 import com.nurbk.ps.countryweather.utils.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SeeAllFragment : Fragment() {
 
     private lateinit var mBinding: FragmentSeeAllBinding
-    private val viewModel: CitiesViewModel by viewModels()
+    @Inject
+    lateinit var viewModel: CitiesViewModel
     private val itemAdapter = ItemParentDetailsAdapter(ObjectDetails("", "", arrayListOf(), -1))
 
     override fun onCreateView(

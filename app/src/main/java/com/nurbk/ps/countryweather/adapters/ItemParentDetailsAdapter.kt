@@ -14,8 +14,8 @@ import com.nurbk.ps.countryweather.model.countries.Currency
 import com.nurbk.ps.countryweather.model.countries.Language
 import com.nurbk.ps.countryweather.model.photos.Photo
 
-class ItemParentDetailsAdapter(var data:ObjectDetails) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+class ItemParentDetailsAdapter(var data: ObjectDetails) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     inner class ItemCitiesViewHolder(val item: ItemCitiesBinding) :
@@ -84,24 +84,28 @@ class ItemParentDetailsAdapter(var data:ObjectDetails) : RecyclerView.Adapter<Re
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (holder) {
-            is ItemImageViewHolder -> {
-                holder.bind(data.data[position] as Photo)
-            }
-            is ItemCitiesViewHolder -> {
-                holder.bind(data.data[position] as City)
-            }
-            is ItemBordersViewHolder -> {
-                when {
-                    data.data[position] is Currency -> try {
-                        holder.bind((data.data[position] as Currency).symbol)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+        try {
+            when (holder) {
+                is ItemImageViewHolder -> {
+                    holder.bind(data.data[position] as Photo)
+                }
+                is ItemCitiesViewHolder -> {
+                    holder.bind(data.data[position] as City)
+                }
+                is ItemBordersViewHolder -> {
+                    when {
+                        data.data[position] is Currency -> try {
+                            holder.bind((data.data[position] as Currency).symbol)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                        data.data[position] is Language -> holder.bind((data.data[position] as Language).name)
+                        else -> holder.bind(data.data[position].toString())
                     }
-                    data.data[position] is Language -> holder.bind((data.data[position] as Language).name)
-                    else -> holder.bind(data.data[position].toString())
                 }
             }
+        } catch (e: Exception) {
+
         }
     }
 

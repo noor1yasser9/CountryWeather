@@ -1,11 +1,13 @@
 package com.nurbk.ps.countryweather.ui.viewmodel
 
 import android.app.Application
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.AndroidViewModel
 import com.nurbk.ps.countryweather.repositories.DetailsCountriesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class WeatherViewModel @ViewModelInject constructor(
+@HiltViewModel
+class WeatherViewModel @Inject constructor(
     val detailsCountriesRepository: DetailsCountriesRepository,
     application: Application,
 ) : AndroidViewModel(application) {
