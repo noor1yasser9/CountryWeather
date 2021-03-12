@@ -1,4 +1,4 @@
-package com.nurbk.ps.countryweather.ui.fragment
+package com.nurbk.ps.countryweather.ui.dialog
 
 import android.app.Dialog
 import android.os.Bundle
@@ -104,7 +104,6 @@ class MultipleDaysFragment : BottomSheetDialogFragment() {
             behaviour.addBottomSheetCallback(object : BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                        // Bottom Sheet was dismissed by user! But this is only fired, if dialog is swiped down! Not if touch outside dismissed the dialog or the back button
                         dismiss()
                     }
                 }
