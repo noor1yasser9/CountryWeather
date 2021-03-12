@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -12,11 +13,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.RequestManager
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.nurbk.ps.countryweather.R
 import com.nurbk.ps.countryweather.adapters.ParentDetailsAdapter
 import com.nurbk.ps.countryweather.databinding.FragmentDealitsBinding
@@ -27,6 +23,7 @@ import com.nurbk.ps.countryweather.model.countries.CountriesItem
 import com.nurbk.ps.countryweather.model.countries.CountriesPageItem
 import com.nurbk.ps.countryweather.model.photos.Photo
 import com.nurbk.ps.countryweather.model.weather.currentweather.CurrentWeatherResponse
+import com.nurbk.ps.countryweather.ui.dialog.LocationFragment
 import com.nurbk.ps.countryweather.ui.viewmodel.CitiesViewModel
 import com.nurbk.ps.countryweather.utils.ConstanceString.DATA_DETAILS
 import com.nurbk.ps.countryweather.utils.Result
@@ -38,10 +35,11 @@ import kotlin.collections.ArrayList
 
 
 @AndroidEntryPoint
-class DetailsFragment : Fragment(), OnMapReadyCallback {
+class DetailsFragment : Fragment() {
 
     private lateinit var mBinding: FragmentDealitsBinding
     private val viewModel: CitiesViewModel by viewModels()
+    private lateinit var location: LocationFragment
 
     @Inject
     lateinit var parentAdapter: ParentDetailsAdapter
@@ -49,18 +47,12 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     @Inject
     lateinit var glide: RequestManager
 
-    private lateinit var countriesItem: CountriesItem
     private lateinit var bundle: Bundle
 
     private val detailsData: DetailsData by lazy {
         DetailsData(UUID.randomUUID().toString(), ArrayList())
     }
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,29 +71,36 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         detailsData.dataList.clear()
         parentAdapter.data = detailsData
-        parentAdapter.data.dataList.clear()
 
         lifecycleScope.launchWhenStarted {
             viewModel.getWeatherLiveData().collect {
                 when (it.status) {
                     Result.Status.LOADING -> {
+                        mBinding.progressBar.isVisible = true
                     }
                     Result.Status.SUCCESS -> {
+                        mBinding.progressBar.isVisible = false
                         try {
                             val data = it.data as CurrentWeatherResponse
                             mBinding.chip5.apply {
                                 text = data.main!!.temp.toString()
                                 setOnClickListener {
-                                    findNavController().navigate(R.id.action_detailsFragment_to_weatherFragment)
+                                    val bundleWeather = Bundle()
+                                    bundleWeather.putInt("type", 2)
+                                    findNavController().navigate(R.id.action_detailsFragment_to_weatherFragment,
+                                        bundleWeather)
                                 }
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
+
                     }
                     Result.Status.ERROR -> {
+                        mBinding.progressBar.isVisible = false
                     }
                 }
             }
@@ -111,8 +110,10 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
             viewModel.getCountryNameLiveData().collect {
                 when (it.status) {
                     Result.Status.LOADING -> {
+                        showLoading()
                     }
                     Result.Status.SUCCESS -> {
+                        dismissLoading()
                         try {
                             detailsData.dataList.clear()
                             val data = it.data as CountriesItem
@@ -120,12 +121,21 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
                             addDataFromBundle("Currencies", data.currencies, 1)
                             addDataFromBundle("Languages", data.languages, 2)
                             mBinding.item = data
+                            location = LocationFragment()
+                            mBinding.btnLocation.setOnClickListener {
+                                if (!location.isAdded) {
+                                    bundle.putParcelable(DATA_DETAILS, data)
+                                    location.arguments = bundle
+                                    location.show(requireActivity().supportFragmentManager, "")
+                                }
+                            }
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
-
+                        mBinding
                     }
                     Result.Status.ERROR -> {
+                        dismissLoading()
                     }
                 }
             }
@@ -158,7 +168,6 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
-
                     }
                     Result.Status.ERROR -> {
                     }
@@ -178,13 +187,19 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         mBinding.txtName.setSingleLine()
         mBinding.txtName.isSelected = true
         bundle.getParcelable<CountriesPageItem>(DATA_DETAILS)?.let { item ->
-
             glide.load(item.countryInfo.flag).into(mBinding.imageView)
         }
 
         parentAdapter.onClick = object : ParentDetailsAdapter.OnClickListener {
             override fun onClickItemListener(data: Any) {
                 if (data is City) {
+                    viewModel.getWeatherCity(data.name)
+                    val bundleWeather = Bundle()
+                    bundleWeather.putInt("type", 1)
+                    findNavController().navigate(
+                        R.id.action_detailsFragment_to_weatherFragment, bundleWeather
+                    )
+
                 } else if (data is Photo) {
                     findNavController().navigate(R.id.action_detailsFragment_to_sliderFragment)
                 }
@@ -201,7 +216,6 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
             objectDetails.data.addAll(data)
         if (index != null)
             try {
-
                 detailsData.dataList.add(index, objectDetails)
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
@@ -218,28 +232,13 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     }
 
 
-    override fun onMapReady(map: GoogleMap?) {
-        val latLng = LatLng(
-            countriesItem.latlng[0],
-            countriesItem.latlng[1]
-        )
-        map!!.addMarker(
-            MarkerOptions()
-                .position(latLng)
-                .title(countriesItem.name)
-        )
-        map.moveCamera(
-            CameraUpdateFactory.newLatLngZoom(
-                latLng, 10f
-            )
-        )
-        map.uiSettings.setAllGesturesEnabled(true)
-        map.uiSettings.isZoomGesturesEnabled = true
-        map.uiSettings.isZoomControlsEnabled = true
-        map.uiSettings.isCompassEnabled = true
-        map.uiSettings.isMyLocationButtonEnabled = true
-        map.isTrafficEnabled = true
+    private fun showLoading() {
+        mBinding.loading.isVisible = true
+    }
 
+    private fun dismissLoading() {
+        mBinding.loading.isVisible = false
+        mBinding.group.isVisible = true
     }
 
 }

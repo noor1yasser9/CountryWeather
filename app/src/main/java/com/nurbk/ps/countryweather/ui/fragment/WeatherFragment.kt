@@ -14,6 +14,8 @@ import com.nurbk.ps.countryweather.databinding.FragmentWeatherBinding
 import com.nurbk.ps.countryweather.model.weather.currentweather.CurrentWeatherResponse
 import com.nurbk.ps.countryweather.model.weather.fivedayweather.FiveDayResponse
 import com.nurbk.ps.countryweather.model.weather.fivedayweather.ItemHourly
+import com.nurbk.ps.countryweather.ui.dialog.MultipleDaysFragment
+import com.nurbk.ps.countryweather.ui.dialog.WeatherDetailsFragment
 import com.nurbk.ps.countryweather.ui.viewmodel.WeatherViewModel
 import com.nurbk.ps.countryweather.utils.AppUtil
 import com.nurbk.ps.countryweather.utils.ConstanceString.DATA_DETAILS
@@ -38,6 +40,7 @@ class WeatherFragment : Fragment() {
         MultipleDaysFragment()
     }
 
+    private lateinit var bundle: Bundle
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,6 +49,7 @@ class WeatherFragment : Fragment() {
         mBinding = FragmentWeatherBinding.inflate(inflater, container, false).apply {
             executePendingBindings()
         }
+        bundle = requireArguments()
         weatherAdapter.type = 1
         return mBinding.root
     }
@@ -54,27 +58,50 @@ class WeatherFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bindTextSwitcher()
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.getWeatherLiveData().collect {
-                when (it.status) {
-                    Result.Status.LOADING -> {
+        if (bundle.getInt("type") == 2) {
+            lifecycleScope.launchWhenStarted {
+                viewModel.getWeatherLiveData().collect {
+                    when (it.status) {
+                        Result.Status.LOADING -> {
 
-                    }
-                    Result.Status.SUCCESS -> {
-                        try {
-                            val data = it.data as CurrentWeatherResponse
-                            bindData(data)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
+                        }
+                        Result.Status.SUCCESS -> {
+                            try {
+                                val data = it.data as CurrentWeatherResponse
+                                bindData(data)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                        Result.Status.ERROR -> {
+
                         }
                     }
-                    Result.Status.ERROR -> {
+                }
+            }
+        } else {
+            lifecycleScope.launchWhenStarted {
+                viewModel.getWeatherCityLiveData().collect {
+                    when (it.status) {
+                        Result.Status.LOADING -> {
 
+                        }
+                        Result.Status.SUCCESS -> {
+                            try {
+                                val data = it.data as CurrentWeatherResponse
+                                bindData(data)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                        Result.Status.ERROR -> {
+
+                        }
                     }
                 }
             }
         }
-        var details = WeatherDetailsFragment()
+        val details = WeatherDetailsFragment()
         lifecycleScope.launchWhenStarted {
             viewModel.getFiveWeatherLiveData().collect {
                 when (it.status) {
@@ -87,7 +114,8 @@ class WeatherFragment : Fragment() {
                             weatherAdapter.data = item.list!!.subList(0, 3)
                             mBinding.animationView.setOnClickListener {
                                 if (!details.isAdded) {
-                                    details.arguments=Bundle().apply { putParcelable(DATA_DETAILS, item) }
+                                    details.arguments =
+                                        Bundle().apply { putParcelable(DATA_DETAILS, item) }
                                     details.show(requireActivity().supportFragmentManager, "")
                                 }
                             }

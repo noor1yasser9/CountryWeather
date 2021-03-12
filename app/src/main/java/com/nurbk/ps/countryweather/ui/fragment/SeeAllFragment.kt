@@ -8,11 +8,14 @@ import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.nurbk.ps.countryweather.R
 import com.nurbk.ps.countryweather.adapters.ItemParentDetailsAdapter
 import com.nurbk.ps.countryweather.databinding.FragmentSeeAllBinding
 import com.nurbk.ps.countryweather.model.ObjectDetails
+import com.nurbk.ps.countryweather.model.cities.City
 import com.nurbk.ps.countryweather.ui.viewmodel.CitiesViewModel
 import com.nurbk.ps.countryweather.utils.Result
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,7 +64,6 @@ class SeeAllFragment : Fragment() {
                 } else {
                     if (isSearching) {
                         isSearching = false
-//                        viewModel.searchCities()
                         getAllCities()
                     }
                 }
@@ -83,9 +85,23 @@ class SeeAllFragment : Fragment() {
                 }
             }
         }
+        itemAdapter.setItemClickListener { data ->
+            if (data is City) {
+                viewModel.getWeatherCity(data.name)
+                val bundleWeather = Bundle()
+                bundleWeather.putInt("type", 1)
+                findNavController().navigate(
+                    R.id.action_seeAllFragment_to_weatherFragment, bundleWeather
+                )
+            }
+        }
+
+        mBinding.btnBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
-    private fun getAllCities(){
+    private fun getAllCities() {
         lifecycleScope.launchWhenStarted {
             viewModel.getCitiesLiveData().collect {
                 when (it.status) {

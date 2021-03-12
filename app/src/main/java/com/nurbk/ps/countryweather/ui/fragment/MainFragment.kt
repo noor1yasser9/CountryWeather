@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -19,7 +20,9 @@ import com.nurbk.ps.countryweather.ui.viewmodel.CountriesViewModel
 import com.nurbk.ps.countryweather.utils.ConstanceString
 import com.nurbk.ps.countryweather.utils.Result
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -53,15 +56,20 @@ class MainFragment : Fragment() {
 
         lifecycleScope.launchWhenStarted {
             viewModel.getSearchLiveData().collect {
-                when (it.status) {
-                    Result.Status.LOADING -> {
-                    }
-                    Result.Status.SUCCESS -> {
-                        val data = it.data as CountriesPage
-                        countriesAdapter.countriesList = data
-                        countriesAdapter.notifyDataSetChanged()
-                    }
-                    Result.Status.ERROR -> {
+                withContext(Dispatchers.Main) {
+                    when (it.status) {
+                        Result.Status.LOADING -> {
+                            showLoading()
+                        }
+                        Result.Status.SUCCESS -> {
+                            dismissLoading()
+                            val data = it.data as CountriesPage
+                            countriesAdapter.countriesList = data
+                            countriesAdapter.notifyDataSetChanged()
+                        }
+                        Result.Status.ERROR -> {
+                            dismissLoading()
+                        }
                     }
                 }
             }
@@ -110,18 +118,31 @@ class MainFragment : Fragment() {
 
         lifecycleScope.launchWhenStarted {
             viewModel.getCountriesLiveData().collect {
-                when (it.status) {
-                    Result.Status.LOADING -> {
-                    }
-                    Result.Status.SUCCESS -> {
-                        val data = it.data as CountriesPage
-                        countriesAdapter.countriesList = data
-                        countriesAdapter.notifyDataSetChanged()
-                    }
-                    Result.Status.ERROR -> {
+                withContext(Dispatchers.Main) {
+                    when (it.status) {
+                        Result.Status.LOADING -> {
+                            showLoading()
+                        }
+                        Result.Status.SUCCESS -> {
+                            dismissLoading()
+                            val data = it.data as CountriesPage
+                            countriesAdapter.countriesList = data
+                            countriesAdapter.notifyDataSetChanged()
+                        }
+                        Result.Status.ERROR -> {
+                            dismissLoading()
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun showLoading() {
+        mBinding.loading.isVisible=true
+    }
+
+    private fun dismissLoading() {
+        mBinding.loading.isVisible=false
     }
 }
