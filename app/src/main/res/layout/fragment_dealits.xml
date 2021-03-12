@@ -39,11 +39,11 @@
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip5"
                         android:layout_width="wrap_content"
-                        android:gravity="center"
-                        android:padding="8dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="16dp"
+                        android:gravity="center"
+                        android:padding="8dp"
                         app:chipIcon="@drawable/ic_celsius"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/guideline3"
@@ -51,6 +51,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/btnLocation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
@@ -78,6 +79,20 @@
                             android:layout_height="match_parent"
                             android:background="#3ddd" />
                     </com.google.android.material.card.MaterialCardView>
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/chip5"
+                        app:layout_constraintEnd_toEndOf="@+id/chip5"
+                        app:layout_constraintStart_toStartOf="@+id/chip5"
+                        app:layout_constraintTop_toTopOf="@+id/chip5" />
 
                     <TextView
                         android:id="@+id/txtName"
@@ -138,31 +153,32 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         app:layout_constraintGuide_begin="244dp" />
+
+                    <LinearLayout
+                        android:id="@+id/loading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/imgFlag"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.48000002"
+                        tools:visibility="visible">
+
+                        <include layout="@layout/dialog_loading" />
+                    </LinearLayout>
+
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/group"
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="chip5,btnLocation,imgFlag,txtName,textView6,textView5,textView4,guideline3" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-<!--            <com.google.android.material.card.MaterialCardView-->
-<!--                android:id="@+id/materialCardView"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="250dp"-->
-<!--                android:layout_marginStart="8dp"-->
-<!--                android:layout_marginTop="16dp"-->
-<!--                android:layout_marginEnd="8dp"-->
-<!--                app:cardCornerRadius="5dp"-->
-<!--                app:cardElevation="4dp"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/materialCardView2">-->
-
-
-<!--                <com.google.android.gms.maps.MapView-->
-<!--                    android:id="@+id/mapView"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent" />-->
-
-
-<!--            </com.google.android.material.card.MaterialCardView>-->
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcData"

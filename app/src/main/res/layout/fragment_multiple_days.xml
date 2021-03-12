@@ -13,17 +13,18 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:src="@drawable/ic_close_black_24dp"
             android:id="@+id/btnClose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/material_blue"
+            android:backgroundTint="@color/material_blue"
             android:gravity="center"
-
+            android:src="@drawable/ic_close_black_24dp"
             android:text="@string/next_15_days_label"
-            android:background="@color/white"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             android:textColor="@android:color/white"
             android:textStyle="bold"
+            android:tint="@color/white"
             app:backgroundTint="@color/bg_screen"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
